@@ -17,7 +17,7 @@ public abstract class AbstractSerializer<T> implements Serializer<T> {
 	@Override
 	public byte[] serialize(T value) {
 		ByteBuffer buffer = ByteBuffer.allocate(bufferSize(value));
-		doSerialize(value, buffer);
+		doSerialize(buffer, value);
 
 		return buffer.array();
 	}
@@ -31,7 +31,7 @@ public abstract class AbstractSerializer<T> implements Serializer<T> {
 
 	public abstract int bufferSize(T value);
 
-	public abstract void doSerialize(T value, ByteBuffer buffer);
+	public abstract void doSerialize(ByteBuffer buffer, T value);
 
 	public abstract T doDeserialize(ByteBuffer buffer);
 

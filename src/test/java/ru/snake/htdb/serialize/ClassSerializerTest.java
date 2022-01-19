@@ -44,7 +44,7 @@ class ClassSerializerTest {
 		}
 
 		@Override
-		public void doSerialize(Class value, ByteBuffer buffer) {
+		public void doSerialize(ByteBuffer buffer, Class value) {
 			buffer.putInt(value.number);
 			LengthEncoder.encode(buffer, value.stringLength);
 			ZeroEncoder.encode(buffer, value.stringZero);
