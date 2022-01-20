@@ -1,6 +1,6 @@
 package ru.snake.htdb.encoder;
 
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 public class SizeCalculator {
 
@@ -118,18 +118,18 @@ public class SizeCalculator {
 		return this;
 	}
 
-	public <T> SizeCalculator withNullable(T value, Function<T, SizeCalculator> sizeCallback) {
+	public <T> SizeCalculator withNullable(T value, BiFunction<SizeCalculator, T, SizeCalculator> sizeCallback) {
 		size += 1;
 
 		if (value != null) {
-			size += sizeCallback.apply(value).size;
+			sizeCallback.apply(this, value);
 		}
 
 		return this;
 	}
 
-	public <T> SizeCalculator withStruct(T value, Function<T, SizeCalculator> sizeCallback) {
-		size += sizeCallback.apply(value).size;
+	public <T> SizeCalculator withStruct(T value, BiFunction<SizeCalculator, T, SizeCalculator> sizeCallback) {
+		sizeCallback.apply(this, value);
 
 		return this;
 	}

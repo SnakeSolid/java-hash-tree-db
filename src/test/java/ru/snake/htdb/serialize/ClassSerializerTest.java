@@ -1,14 +1,11 @@
 package ru.snake.htdb.serialize;
 
-import java.nio.ByteBuffer;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import ru.snake.htdb.encoder.LengthEncoder;
-import ru.snake.htdb.encoder.OptionalEncoder;
+import ru.snake.htdb.encoder.Decoder;
+import ru.snake.htdb.encoder.Encoder;
 import ru.snake.htdb.encoder.SizeCalculator;
-import ru.snake.htdb.encoder.ZeroEncoder;
 
 class ClassSerializerTest {
 
@@ -37,34 +34,33 @@ class ClassSerializerTest {
 	}
 
 	private static class TestSerializer extends AbstractSerializer<Class> {
-
 		@Override
 		public void bufferSize(SizeCalculator calculator, Class value) {
 			calculator.with(value.number)
 				.withLength(value.stringLength)
 				.withZero(value.stringZero)
-				.withNullable(value.nullable, (v) -> new SizeCalculator().withLength(v));
+				.withNullable(value.nullable, (s, v) -> s.withLength(v));
 		}
 
 		@Override
-		public void doSerialize(ByteBuffer buffer, Class value) {
-			buffer.putInt(value.number);
-			LengthEncoder.encode(buffer, value.stringLength);
-			ZeroEncoder.encode(buffer, value.stringZero);
-			OptionalEncoder.encode(buffer, value.nullable, (b, v) -> ZeroEncoder.encode(buffer, v));
+		public void doSerialize(Encoder encoder, Class value) {
+			encoder.encode(value.number)
+				.encodeLength(value.stringLength)
+				.encodeZero(value.stringZero)
+				.encodeNullable(value.nullable, (e, v) -> e.encodeLength(value.nullable));
 		}
 
 		@Override
-		public Class doDeserialize(ByteBuffer buffer) {
+		public Class doDeserialize(Decoder decoder) {
 			Class value = new Class();
-			value.number = buffer.getInt();
-			value.stringLength = LengthEncoder.decode(buffer);
-			value.stringZero = ZeroEncoder.decode(buffer);
-			value.nullable = OptionalEncoder.decode(buffer, (b) -> ZeroEncoder.decode(buffer));
+
+			decoder.decodeInt(v -> value.number = v)
+				.decodeLength(v -> value.stringLength = v)
+				.decodeZero(v -> value.stringZero = v)
+				.decodeNullable(value.nullable, (d) -> d.decodeLength(v -> value.nullable = v));
 
 			return value;
 		}
-
 	}
 
 	private static class Class {
