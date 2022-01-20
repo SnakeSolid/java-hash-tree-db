@@ -2,6 +2,8 @@ package ru.snake.htdb.serialize;
 
 import java.nio.ByteBuffer;
 
+import ru.snake.htdb.encoder.SizeCalculator;
+
 public abstract class AbstractSerializer<T> implements Serializer<T> {
 
 	protected static int SIZE_BYTE = Byte.BYTES;
@@ -16,7 +18,10 @@ public abstract class AbstractSerializer<T> implements Serializer<T> {
 
 	@Override
 	public byte[] serialize(T value) {
-		ByteBuffer buffer = ByteBuffer.allocate(bufferSize(value));
+		SizeCalculator calculator = new SizeCalculator();
+		bufferSize(calculator, value);
+
+		ByteBuffer buffer = ByteBuffer.allocate(calculator.size());
 		doSerialize(buffer, value);
 
 		return buffer.array();
@@ -29,7 +34,7 @@ public abstract class AbstractSerializer<T> implements Serializer<T> {
 		return doDeserialize(buffer);
 	}
 
-	public abstract int bufferSize(T value);
+	public abstract void bufferSize(SizeCalculator calculator, T value);
 
 	public abstract void doSerialize(ByteBuffer buffer, T value);
 

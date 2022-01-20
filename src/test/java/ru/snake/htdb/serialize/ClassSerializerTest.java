@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import ru.snake.htdb.encoder.LengthEncoder;
 import ru.snake.htdb.encoder.OptionalEncoder;
+import ru.snake.htdb.encoder.SizeCalculator;
 import ru.snake.htdb.encoder.ZeroEncoder;
 
 class ClassSerializerTest {
@@ -38,9 +39,11 @@ class ClassSerializerTest {
 	private static class TestSerializer extends AbstractSerializer<Class> {
 
 		@Override
-		public int bufferSize(Class value) {
-			return SIZE_INTEGER + LengthEncoder.size(value.stringLength) + ZeroEncoder.size(value.stringZero)
-					+ OptionalEncoder.size(ZeroEncoder.size(value.nullable));
+		public void bufferSize(SizeCalculator calculator, Class value) {
+			calculator.with(value.number)
+				.withLength(value.stringLength)
+				.withZero(value.stringZero)
+				.withNullable(value.nullable, (v) -> new SizeCalculator().withLength(v));
 		}
 
 		@Override
