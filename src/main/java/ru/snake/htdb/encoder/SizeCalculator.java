@@ -40,6 +40,18 @@ public class SizeCalculator {
 		return this;
 	}
 
+	public SizeCalculator with(float dummy) {
+		size += Float.BYTES;
+
+		return this;
+	}
+
+	public SizeCalculator with(double dummy) {
+		size += Double.BYTES;
+
+		return this;
+	}
+
 	public SizeCalculator with(Byte dummy) {
 		size += Byte.BYTES;
 
@@ -70,14 +82,38 @@ public class SizeCalculator {
 		return this;
 	}
 
+	public SizeCalculator with(Float dummy) {
+		size += Float.BYTES;
+
+		return this;
+	}
+
+	public SizeCalculator with(Double dummy) {
+		size += Double.BYTES;
+
+		return this;
+	}
+
 	public SizeCalculator withLength(String value) {
-		size += LengthEncoder.size(value);
+		size += Integer.BYTES + value.getBytes().length;
+
+		return this;
+	}
+
+	public SizeCalculator withLength(byte[] value) {
+		size += Integer.BYTES + value.length;
 
 		return this;
 	}
 
 	public SizeCalculator withZero(String value) {
-		size += ZeroEncoder.size(value);
+		size += value.getBytes().length + Byte.BYTES;
+
+		return this;
+	}
+
+	public SizeCalculator withZero(byte[] value) {
+		size += value.length + Byte.BYTES;
 
 		return this;
 	}
