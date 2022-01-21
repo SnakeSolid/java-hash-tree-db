@@ -15,16 +15,22 @@ Only serializer implementation is required to create HTDB with default configura
 ```java
 Serializer<String> serializer = new StringSerializer();
 HTDB<String, String, String> htdb = HTDB.create(serializer);
-// operations with database
+  htdb.put("cat", "murzik", "black");
+  htdb.put("cat", "murka", "white");
+  System.out.println(htdb.count()); // returns 2
+  System.out.println(htdb.get("cat", "murka")); // returns `white`
 htdb.close();
 ```
 
-HTDB implements `AutoCloseable` imterface and can be used in try with resources clause:
+HTDB implements `AutoCloseable` interface and can be used in try with resources clause:
 
 ```java
 Serializer<String> serializer = new StringSerializer();
 try (HTDB<String, String, String> htdb = HTDB.create(serializer)) {
-	// operations with database
+  htdb.put("cat", "murzik", "black");
+  htdb.put("cat", "murka", "white");
+  System.out.println(htdb.count()); // returns 2
+  System.out.println(htdb.get("cat", "murka")); // returns `white`
 }
 ```
 
