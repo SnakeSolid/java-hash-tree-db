@@ -110,6 +110,14 @@ public class HTDB<P, K, V> implements AutoCloseable {
 		return HTDBNative.count(handle);
 	}
 
+	public void save() {
+		HTDBNative.save(handle);
+	}
+
+	public void load() {
+		HTDBNative.load(handle);
+	}
+
 	@Override
 	public void close() throws Exception {
 		HTDBNative.destroy(handle);
