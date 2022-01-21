@@ -95,19 +95,20 @@ public class Decoder {
 		return this;
 	}
 
-	public <T> Decoder decodeNullable(T setter, Function<Decoder, Decoder> callback) {
+	public <T> Decoder decodeNullable(Function<Decoder, Decoder> callback) {
 		switch (buffer.get()) {
 		case ZERO:
-			return this;
+			break;
 
 		case ONE:
 			callback.apply(this);
-
-			return this;
+			break;
 
 		default:
 			throw new HTDBInvalidNullableException();
 		}
+
+		return this;
 	}
 
 	@Override

@@ -57,7 +57,7 @@ class ClassSerializerTest {
 			decoder.decodeInt(v -> value.number = v)
 				.decodeLength(v -> value.stringLength = v)
 				.decodeZero(v -> value.stringZero = v)
-				.decodeNullable(value.nullable, (d) -> d.decodeLength(v -> value.nullable = v));
+				.decodeNullable(d -> d.decodeLength(v -> value.nullable = v));
 
 			return value;
 		}
